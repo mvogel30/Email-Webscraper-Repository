@@ -1,0 +1,16 @@
+{
+  "_note": "New Process & Scope website source list (see C:\\Users\\mivogel\\.claude\\plans\\lively-roaming-moth.md). CSIS/CFR/Atlantic Council/China Macro Group's article entries are REMOVED here - their regular content now comes from named email newsletters instead (see email-scraper/vendors.new.json). Chatham House's article entry is also removed (on hold, their website is down - revisit later). Every *_events/*_webinars entry is kept unchanged - Events capture does not change in the new process.",
+  "lookback_days": 30,
+  "sources": [
+    { "name": "Lowy Institute", "parser": "rss", "url": "https://www.lowyinstitute.org/the-interpreter/rss.xml" },
+    { "name": "Deloitte Insights", "parser": "deloitte_insights", "url": "https://www.deloitte.com/us/sitemaps/secured/sitemap_us_en.xml" },
+    { "name": "WEF", "parser": "wef_publications", "url": "https://www.weforum.org/publications/" },
+    { "name": "CSIS Events", "parser": "csis_events", "url": "https://www.csis.org/index.php/events" },
+    { "name": "Atlantic Council Events", "parser": "ac_events", "url": "https://www.atlanticcouncil.org/events/" },
+    { "name": "CFR Events", "parser": "cfr_events", "url": "https://www.cfr.org/events" },
+    { "name": "Chatham House Events", "parser": "chatham_events", "url": "https://www.chathamhouse.org/events/upcoming" },
+    { "name": "WEF Meetings", "parser": "wef_meetings", "url": "https://www.weforum.org/meetings/" },
+    { "name": "Middle East Council Events", "parser": "mec_events", "url": "https://mecouncil.org/events/" },
+    { "name": "China Macro Group Webinars", "parser": "chinamacro_webinars", "url": "https://www.chinamacro.ch/webinar" }
+  ]
+}

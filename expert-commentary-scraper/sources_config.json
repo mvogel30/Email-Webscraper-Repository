@@ -1,0 +1,21 @@
+{
+  "_note": "No topic/keyword filter in this tool - every article found on each source is kept. Add future sources by appending to this list once a working parser exists for them (see sources.py).",
+  "lookback_days": 30,
+  "sources": [
+    { "name": "Atlantic Council", "parser": "ac_dispatches", "url": "https://www.atlanticcouncil.org/dispatches/" },
+    { "name": "CSIS", "parser": "csis", "url": "https://www.csis.org/analysis" },
+    { "name": "CFR", "parser": "cfr", "url": "https://www.cfr.org/expert-takes" },
+    { "name": "Chatham House", "parser": "chatham", "url": "https://www.chathamhouse.org/search/content_format/Expert%20comment" },
+    { "name": "Lowy Institute", "parser": "rss", "url": "https://www.lowyinstitute.org/the-interpreter/rss.xml" },
+    { "name": "China Macro Group", "parser": "chinamacro", "url": "https://www.chinamacro.ch/insights" },
+    { "name": "Deloitte Insights", "parser": "deloitte_insights", "url": "https://www.deloitte.com/us/sitemaps/secured/sitemap_us_en.xml" },
+    { "name": "WEF", "parser": "wef_publications", "url": "https://www.weforum.org/publications/" },
+    { "name": "CSIS Events", "parser": "csis_events", "url": "https://www.csis.org/index.php/events" },
+    { "name": "Atlantic Council Events", "parser": "ac_events", "url": "https://www.atlanticcouncil.org/events/" },
+    { "name": "CFR Events", "parser": "cfr_events", "url": "https://www.cfr.org/events" },
+    { "name": "Chatham House Events", "parser": "chatham_events", "url": "https://www.chathamhouse.org/events/upcoming" },
+    { "name": "WEF Meetings", "parser": "wef_meetings", "url": "https://www.weforum.org/meetings/" },
+    { "name": "Middle East Council Events", "parser": "mec_events", "url": "https://mecouncil.org/events/" },
+    { "name": "China Macro Group Webinars", "parser": "chinamacro_webinars", "url": "https://www.chinamacro.ch/webinar" }
+  ]
+}

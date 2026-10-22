@@ -1,0 +1,87 @@
+{
+  "active_topic": "Iran",
+  "topics": {
+    "Iran": {
+      "lookback_days": 30,
+      "require_keywords": false,
+      "keywords": ["iran", "tehran", "irgc", "khamenei", "pezeshkian", "islamic republic", "quds force", "hormuz", "persian gulf"],
+      "sources": [
+        {
+          "name": "Atlantic Council",
+          "parser": "rss",
+          "url": "https://www.atlanticcouncil.org/region/iran/feed/"
+        },
+        {
+          "name": "CSIS",
+          "parser": "csis",
+          "url": "https://www.csis.org/regions/middle-east/iran",
+          "fetch_summary": true,
+          "_note": "CSIS's page only shows a summary blurb for its top 'featured' cards — smaller list cards below have no summary in the listing at all, so fetch_summary backfills those from each article's own meta description."
+        },
+        {
+          "name": "CFR",
+          "parser": "cfr",
+          "url": "https://www.cfr.org/middle-east-and-north-africa/iran",
+          "fetch_summary": true
+        },
+        {
+          "name": "Chatham House",
+          "parser": "chatham",
+          "url": "https://www.chathamhouse.org/regions/middle-east-and-north-africa/iran"
+        },
+        {
+          "name": "Lowy Institute",
+          "parser": "rss",
+          "url": "https://www.lowyinstitute.org/the-interpreter/rss.xml",
+          "require_keywords": true,
+          "_note": "General 'The Interpreter' blog feed, not Iran-specific — keyword-filtered."
+        },
+        {
+          "name": "Middle East Council on Global Affairs",
+          "parser": "mecouncil",
+          "url": "https://mecouncil.org/publications/",
+          "require_keywords": true,
+          "fetch_summary": true,
+          "_note": "Formal Publications listing (has real per-article dates). Their 'Afkar' opinion blog was skipped: it has no reliable per-article date in its listing."
+        },
+        {
+          "name": "China Macro Group",
+          "parser": "chinamacro",
+          "url": "https://www.chinamacro.ch/insights",
+          "require_keywords": true,
+          "_note": "General China-focused Insights feed, not Iran-specific — keyword-filtered. Dates are month-level precision only (the site doesn't publish a day)."
+        }
+      ]
+    },
+
+    "Ukraine": {
+      "_comment": "Template for a second brief. Verify each URL loads the right topic page before relying on it, then set active_topic to \"Ukraine\" (or pass --topic Ukraine).",
+      "lookback_days": 30,
+      "require_keywords": false,
+      "keywords": ["ukraine", "kyiv", "zelensky", "zelenskyy", "donbas", "crimea"],
+      "sources": [
+        {
+          "name": "Atlantic Council",
+          "parser": "rss",
+          "url": "https://www.atlanticcouncil.org/region/ukraine/feed/"
+        },
+        {
+          "name": "CSIS",
+          "parser": "csis",
+          "url": "https://www.csis.org/regions/europe/ukraine"
+        },
+        {
+          "name": "CFR",
+          "parser": "cfr",
+          "url": "https://www.cfr.org/europe-and-eurasia/ukraine",
+          "fetch_summary": true
+        },
+        {
+          "name": "Chatham House",
+          "parser": "chatham",
+          "url": "https://www.chathamhouse.org/regions/russia-and-eurasia/ukraine"
+        }
+      ]
+    }
+  }
+}

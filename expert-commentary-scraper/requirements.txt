@@ -1,0 +1,15 @@
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=5.0
+feedparser>=6.0
+openpyxl>=3.1
+
+# Only used for the WEF source, which actively blocks plain HTTP clients (requests/curl) but
+# loads fine through a real browser - see extract_wef_publications() in sources.py. After
+# installing this, also run:  python -m playwright install chromium
+# (one-time, downloads the ~300MB headless Chromium browser Playwright drives).
+playwright>=1.62
+
+# Only used to extract text from WEF's linked PDF reports (_wef_pdf_full_text in sources.py) -
+# most WEF listing cards have no description to fall back on, so this is the real content source.
+pypdf>=5.0

@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py \"C:\\Users\\mivogel\\OneDrive - Deloitte (O365D)\\Documents\\GitHub\\Michael_Vogel_Repository\\expert-commentary-scraper\\hook_regenerate_docx.py\"",
+            "timeout": 30,
+            "statusMessage": "Regenerating Scraping Sources docx if SCRAPING-SOURCES.md changed..."
+          }
+        ]
+      }
+    ]
+  }
+}
