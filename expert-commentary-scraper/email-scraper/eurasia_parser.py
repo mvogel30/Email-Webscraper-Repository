@@ -442,11 +442,11 @@ def _trim_eg_conference_call_text(text: str) -> str:
 
 
 def parse_email(subject: str, body: str, received_date: str, vendor: str = "",
-                 sender_name: str = "", sender_email: str = "") -> list:
+                 sender_name: str = "", sender_email: str = "", row_schema: str = "legacy") -> list:
     """Uniform entry point every vendor parser module exposes (see
-    parse_and_append_vendor_emails.py). `vendor`/`sender_name`/`sender_email` are unused here
-    (this module only ever serves Eurasia Group) - accepted for interface consistency with the
-    other parser modules, some of which do need them."""
+    parse_and_append_vendor_emails.py). `vendor`/`sender_name`/`sender_email`/`row_schema` are
+    unused here (this module only ever serves Eurasia Group) - accepted for interface consistency
+    with the other parser modules, some of which do need them."""
     articles = parse_eurasia_email(subject, body, received_date)
     is_event = bool(articles) and articles[0].get("newsletter_name") in EVENT_NEWSLETTER_NAMES
     for article in articles:

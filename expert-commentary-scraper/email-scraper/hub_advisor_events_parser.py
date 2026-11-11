@@ -106,7 +106,24 @@ NEWSLETTER_SENDER_RULES_BY_VENDOR = {
 }
 
 
-def _matched_newsletter_name(vendor: str, clean_subject: str, sender_name: str = "", sender_email: str = "") -> str:
+# 2026-11-04, real bug found: the two dicts above are keyed by vendor name only, with no notion of
+# which process (Old vs New) is running - but vendors.json (Old Process) ALSO routes CSIS/CFR/
+# Atlantic Council through this same module/function for their event-only capture. Confirmed live:
+# the Old Process's own "DO NOT OPEN" workbook had 195 contaminated rows ("The Daily Brief", "AC
+# Intel", "Inflection Points", CFR Spotlight/Regional Roundup, ...) that were never supposed to be
+# there per this module's own docstring ("deliberately OUT of scope" for the Old Process). This set
+# is the explicit allowlist of which (vendor, row_schema) combinations may use the newsletter
+# branch at all - Chatham House is listed for both schemas since the user wants it captured in both
+# processes; CSIS/CFR/Atlantic Council stay New-Process-only, matching the original intent.
+NEWSLETTER_BRANCH_ENABLED_FOR = {
+    ("CSIS", "new-structure"), ("CFR", "new-structure"), ("Atlantic Council", "new-structure"),
+}
+
+
+def _matched_newsletter_name(vendor: str, clean_subject: str, sender_name: str = "", sender_email: str = "",
+                              row_schema: str = "legacy") -> str:
+    if (vendor, row_schema) not in NEWSLETTER_BRANCH_ENABLED_FOR:
+        return ""
     for name, matches in NEWSLETTER_SENDER_RULES_BY_VENDOR.get(vendor, []):
         if matches(sender_name or "", sender_email or ""):
             return name
@@ -424,13 +441,15 @@ def _build_base_article(clean_subject: str, body: str, received_date: str) -> di
 
 
 def parse_email(subject: str, body: str, received_date: str, vendor: str = "",
-                 sender_name: str = "", sender_email: str = "") -> list:
+                 sender_name: str = "", sender_email: str = "", row_schema: str = "legacy") -> list:
     """Uniform entry point every vendor parser module exposes (see
     parse_and_append_vendor_emails.py). Three-way branch: a real event invitation (unchanged
-    behavior - see module docstring), one of this vendor's named newsletters (New Process & Scope
-    only - matched by sender identity where that's the more reliable signal, else subject text -
-    see NEWSLETTER_SENDER_RULES_BY_VENDOR/NEWSLETTER_NAMES_BY_VENDOR above), or neither, in which
-    case the email is dropped exactly as it always has been for this module."""
+    behavior - see module docstring), one of this vendor's named newsletters (gated per
+    (vendor, row_schema) by NEWSLETTER_BRANCH_ENABLED_FOR above - matched by sender identity where
+    that's the more reliable signal, else subject text), or neither, in which case the email is
+    dropped exactly as it always has been for this module. `row_schema` is "legacy" for the Old
+    Process, "new-structure" for the New Process - see parse_and_append_vendor_emails.py's own
+    --row-schema flag, which is what's actually threaded through here."""
     clean_subject = strip_external_prefix(clean_text(subject))
 
     if is_event_subject(subject):
@@ -452,7 +471,7 @@ def parse_email(subject: str, body: str, received_date: str, vendor: str = "",
         })
         return [article] if article["title"] and article["full_text"] else []
 
-    newsletter_name = _matched_newsletter_name(vendor, clean_subject, sender_name, sender_email)
+    newsletter_name = _matched_newsletter_name(vendor, clean_subject, sender_name, sender_email, row_schema)
     if newsletter_name:
         # 2026-10-22, per user request: only Inflection Points ever carries the trailing
         # "Highlights from the Atlantic Council" list (see _extract_ac_highlights_items's module

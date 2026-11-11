@@ -100,12 +100,13 @@ EXCLUDED_NEWSLETTER_NAMES = {"SIGNUM Investor Trip", "SIGNUM Policy Day"}
 
 
 def parse_email(subject: str, body: str, received_date: str, vendor: str = "",
-                 sender_name: str = "", sender_email: str = "") -> list:
+                 sender_name: str = "", sender_email: str = "", row_schema: str = "legacy") -> list:
     """Uniform entry point every vendor parser module exposes (see
     parse_and_append_vendor_emails.py): one email in, zero-or-more normalized article dicts out.
-    `vendor`/`sender_name`/`sender_email` are unused here (this module only ever serves Signum,
-    matched by domain alone) - accepted for interface consistency with the other parser modules,
-    some of which do need them (hub_advisor_events_parser.py's sender-identity matching)."""
+    `vendor`/`sender_name`/`sender_email`/`row_schema` are unused here (this module only ever
+    serves Signum, matched by domain alone) - accepted for interface consistency with the other
+    parser modules, some of which do need them (hub_advisor_events_parser.py's sender-identity/
+    row_schema matching)."""
     article = parse_signum_email(subject, body, received_date)
     if article.get("newsletter_name") in EXCLUDED_NEWSLETTER_NAMES:
         return []

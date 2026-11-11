@@ -68,6 +68,13 @@ def detect_newsletter_name(subject: str, vendor: str) -> str:
     # their first real sample arrived.
     if vendor == "China Macro Group":
         return "Main Newsletter"
+    # 2026-11-04, per user request: catch Chatham House's weekly newsletter for both processes. No
+    # real sample has been seen yet (0 matches in a live 60-day scan of this inbox against their
+    # verified domain chathamhouse.org - not subscribed from this inbox, or sent from a different
+    # sending domain, e.g. a mailing-list host) - same "safe minimum" placeholder name as China
+    # Macro Group above, pending a real sample to refine the detection and the name.
+    if vendor == "Chatham House":
+        return "Weekly Newsletter"
     return vendor
 
 
@@ -398,14 +405,14 @@ def parse_generic_vendor_email(subject: str, body: str, received_date: str, vend
 
 
 def parse_email(subject: str, body: str, received_date: str, vendor: str = "",
-                 sender_name: str = "", sender_email: str = "") -> list:
+                 sender_name: str = "", sender_email: str = "", row_schema: str = "legacy") -> list:
     """Uniform entry point every vendor parser module exposes (see
     parse_and_append_vendor_emails.py). MEC's "Daily Brief" specifically routes through the
     country-section splitter above; every other newsletter/vendor (including Vriens & Partners,
-    which has no real sample yet at all, and MEC's own other newsletter types like "Monthly
-    Newsletter" - unverified structure, left whole) keeps the original single-row behavior.
-    `sender_name`/`sender_email` are unused here - accepted for interface consistency with the
-    other parser modules, some of which do need them."""
+    Chatham House, and MEC's own other newsletter types like "Monthly Newsletter" - unverified
+    structure, left whole) keeps the original single-row behavior. `sender_name`/`sender_email`/
+    `row_schema` are unused here - accepted for interface consistency with the other parser
+    modules, some of which do need them."""
     newsletter_name = detect_newsletter_name(subject, vendor)
     if vendor == "Middle East Council on Global Affairs" and newsletter_name == "Daily Brief":
         articles = parse_mec_daily_brief(subject, body, received_date)

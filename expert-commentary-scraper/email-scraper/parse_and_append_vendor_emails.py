@@ -65,7 +65,7 @@ def load_vendor_parsers(vendors_config_path: Path) -> dict:
     return parsers
 
 
-def emails_to_articles(emails: list, parsers: dict) -> list:
+def emails_to_articles(emails: list, parsers: dict, row_schema: str = "legacy") -> list:
     articles = []
     skipped_unknown_vendor = collections.Counter()
     skipped_reply_forward = collections.Counter()
@@ -81,6 +81,7 @@ def emails_to_articles(emails: list, parsers: dict) -> list:
         for parsed in parser.parse_email(
             email["subject"], email["body"], email["received_date"], vendor,
             sender_name=email.get("sender_name", ""), sender_email=email.get("sender_email", ""),
+            row_schema=row_schema,
         ):
             full_text = parsed["full_text"]
             articles.append({
@@ -140,7 +141,7 @@ def main():
     emails = json.loads(raw) if raw else []
     if isinstance(emails, dict):
         emails = [emails]
-    all_articles = emails_to_articles(emails, parsers)
+    all_articles = emails_to_articles(emails, parsers, row_schema=args.row_schema)
     articles = [a for a in all_articles if not a.get("is_event")]
     event_articles = [a for a in all_articles if a.get("is_event")]
 
