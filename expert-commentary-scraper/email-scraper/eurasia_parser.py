@@ -371,6 +371,17 @@ def detect_newsletter_name(subject: str, body: str) -> str:
         return "EG Conference Call"
     if re.search(r"\bdaily brief\b", body or "", re.I):
         return "EG Daily Brief"
+    # 2026-11-17, per user request: these were falling into the generic "Eurasia Group - No Tag"
+    # bucket (real example: "The Nvidia 'spy' scandal will accelerate US-China decoupling", no
+    # "EG <tag>:" subject prefix at all) and, worse, that generic title sometimes exactly matches
+    # a LATER "EG Daily Brief" section's own title when the same analysis gets folded into a
+    # Daily Brief edition a day or two later - real body banner is literally "Practice Letter"
+    # (same banner-tag convention as "Daily Brief" above), self-described in the body as "the
+    # latest in a series of periodic letters to clients in which Eurasia Group's practices
+    # present their views". Naming it explicitly keeps the two apart in the Newsletter Name
+    # column even when the Article Title happens to collide.
+    if re.search(r"\bpractice letter\b", body or "", re.I):
+        return "EG Practice Letter"
     # Not every conference-call invite says "EG Conference Call" in the subject (e.g. "Analysing
     # global oil & gas markets" doesn't) - found 2026-08-05 falling through to the generic
     # fallback below instead. The body's own "Upcoming Conference Call" tag is the reliable
@@ -383,10 +394,10 @@ def detect_newsletter_name(subject: str, body: str) -> str:
     practice_name = _eg_practice_newsletter_name(subject)
     if practice_name:
         return practice_name
-    # 2026-08-19, per the user: label this bucket explicitly "- No Tag" rather than leaving it
-    # looking identical to the vendor's own name - makes clear (confirmed via investigation) that
-    # these are genuinely untagged in the source subject, not an unclassified gap on our end.
-    return "Eurasia Group - No Tag"
+    # 2026-11-17, per the user: reverted the 2026-08-19 "- No Tag" suffix back to plain "Eurasia
+    # Group" - this bucket is still exactly the same thing (genuinely untagged in the source
+    # subject, not an unclassified gap on our end), just named more simply now.
+    return "Eurasia Group"
 
 
 def parse_eurasia_email(subject: str, body: str, received_date: str) -> list:

@@ -704,11 +704,24 @@ def append_rows(sheet, articles, columns=REPOSITORY_COLUMNS, row_builder=None):
             continue
         seen.add(url_key)
         seen.add(t_key)
-        if is_new_edition:
-            if url:
-                latest_by_url[sources.normalize_url(url).lower()] = (incoming_date, incoming_text)
-            else:
-                latest_by_title[(source, title)] = (incoming_date, incoming_text)
+        # 2026-11-17, real bug found: this used to only run inside `if is_new_edition:`, so a
+        # (source, title)/URL pair with no PRE-EXISTING sheet row (stored is None, so
+        # is_new_edition is always False the first time) never got recorded here at all - only
+        # `seen` got the key. Real case: Eurasia Group sent a Practice Letter and, in the same
+        # scan window, a same-titled Daily Brief section with completely different content ~14
+        # hours later - both arrived in the SAME run. The Practice Letter was added first (brand
+        # new title, is_new_edition=False, but still added since t_key wasn't in `seen` yet) -
+        # without this update, latest_by_title never learned about it, so when the Daily Brief
+        # section was checked next, `stored` came back None, forcing is_new_edition=False again,
+        # and it was silently skipped as a plain duplicate even though it was genuinely newer
+        # content. Updating this dict on EVERY successful add (not just the "replaced an older
+        # edition" case) fixes same-run collisions like this one, while the date+content check
+        # above still protects against true duplicates - a same-date or byte-identical repeat
+        # still correctly gets skipped.
+        if url:
+            latest_by_url[sources.normalize_url(url).lower()] = (incoming_date, incoming_text)
+        else:
+            latest_by_title[(source, title)] = (incoming_date, incoming_text)
         values = [row.get(column, "") for column in columns]
         sheet.append(values)
         added.append(article)
