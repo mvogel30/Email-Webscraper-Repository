@@ -26,6 +26,16 @@ def parse_args():
     return ap.parse_args()
 
 
+# 2026-11-18, per user: this Lowy Institute "Interpreter" article's RSS entry carries a bugged
+# future-dated pubDate (2027-10-05) straight from the source feed. within_window() below only
+# ever drops articles OLDER than the cutoff, so a future date always passes it, every single day,
+# forever - that's why it kept reappearing. Hard-excluding it by URL instead of chasing the feed
+# bug upstream; shared by both Old and New Process since both point fetch_articles.py at Lowy.
+EXCLUDED_URLS = {
+    "https://www.lowyinstitute.org/the-interpreter/australia-barely-owns-a-ship-but-moves-the-world-s-heaviest-cargo-and-carbon",
+}
+
+
 def within_window(published_iso: str, cutoff: dt.date) -> bool:
     """Keep an article if it has no parseable date (never silently drop content)
     or its date is on/after the cutoff."""
@@ -60,6 +70,7 @@ def main():
             continue
 
         found = len(articles)
+        articles = [a for a in articles if a["url"] not in EXCLUDED_URLS]
         if cutoff is not None:
             articles = [a for a in articles if within_window(a["published"], cutoff)]
 
